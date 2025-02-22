@@ -1,13 +1,45 @@
 import panels.CartesianCoordinatePanel;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Parallelogram in Java!");
+        JFrame frame = new JFrame("Parallelograms in Java!");
+
         CartesianCoordinatePanel mainPanel = new CartesianCoordinatePanel();
 
-        frame.add(mainPanel);
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        JLabel xLabel = new JLabel("X:");
+        JTextField xField = new JTextField(5);
+        JLabel yLabel = new JLabel("Y:");
+        JTextField yField = new JTextField(5);
+        JButton addButton = new JButton("Add Point");
+
+        inputPanel.add(xLabel);
+        inputPanel.add(xField);
+        inputPanel.add(yLabel);
+        inputPanel.add(yField);
+        inputPanel.add(addButton);
+
+        addButton.addActionListener(e -> {
+            try {
+                int x = Integer.parseInt(xField.getText());
+                int y = Integer.parseInt(yField.getText());
+                // Додаємо точку на панель
+                xField.setText("");
+                yField.setText("");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
+            }
+        });
+
+        frame.setLayout(new BorderLayout());
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.add(inputPanel, BorderLayout.NORTH);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);

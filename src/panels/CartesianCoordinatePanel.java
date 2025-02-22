@@ -2,24 +2,19 @@ package panels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
 
     public CartesianCoordinatePanel() {
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                int rotation = e.getWheelRotation();
-                if (rotation < 0) {
-                    scale += 5;
-                } else if (rotation > 0 && scale > 10) {
-                    scale -= 5;
-                }
-                repaint();
+        addMouseWheelListener(e -> {
+            int rotation = e.getWheelRotation();
+            if (rotation < 0) {
+                scale += 5;
+            } else if (rotation > 0 && scale > 10) {
+                scale -= 5;
             }
+            repaint();
         });
     }
 
