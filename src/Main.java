@@ -24,18 +24,32 @@ public class Main {
         JLabel yLabel = new JLabel("Y:");
         JTextField yField = new JTextField(5);
         JButton addButton = new JButton("Add Point");
+        JButton removeButton = new JButton("Remove Point");
 
         inputPanel.add(xLabel);
         inputPanel.add(xField);
         inputPanel.add(yLabel);
         inputPanel.add(yField);
         inputPanel.add(addButton);
+        inputPanel.add(removeButton);
 
         addButton.addActionListener(e -> {
             try {
                 int x = Integer.parseInt(xField.getText());
                 int y = Integer.parseInt(yField.getText());
                 mainPanel.addPoint(x, y);
+                xField.setText("");
+                yField.setText("");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
+            }
+        });
+
+        removeButton.addActionListener(e -> {
+            try {
+                int x = Integer.parseInt(xField.getText());
+                int y = Integer.parseInt(yField.getText());
+                mainPanel.removePoint(x, y);
                 xField.setText("");
                 yField.setText("");
             } catch (NumberFormatException ex) {
