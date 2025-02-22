@@ -35,7 +35,7 @@ public class Main {
             try {
                 int x = Integer.parseInt(xField.getText());
                 int y = Integer.parseInt(yField.getText());
-                // mainPanel.addPoint(x, y);
+                mainPanel.addPoint(x, y);
                 xField.setText("");
                 yField.setText("");
             } catch (NumberFormatException ex) {

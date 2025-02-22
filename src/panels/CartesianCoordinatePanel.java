@@ -2,9 +2,12 @@ package panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
+    private List<Point> points = new ArrayList<>();
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -16,6 +19,11 @@ public class CartesianCoordinatePanel extends JPanel {
             }
             repaint();
         });
+    }
+
+    public void addPoint(int x, int y) {
+        points.add(new Point(x, y));
+        repaint();
     }
 
     @Override
@@ -43,6 +51,13 @@ public class CartesianCoordinatePanel extends JPanel {
         g2d.drawString("Y", centerX + 5, 15);
 
         drawGrid(g2d, width, height, centerX, centerY);
+
+        g2d.setColor(Color.CYAN);
+        for (Point p : points) {
+            int x = centerX + p.x * scale;
+            int y = centerY - p.y * scale;
+            g2d.fillOval(x - 5, y - 5, 10, 10);
+        }
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
