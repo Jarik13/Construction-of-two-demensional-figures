@@ -8,6 +8,8 @@ import java.util.List;
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private List<Point> points = new ArrayList<>();
+    private List<String> pointLabels = new ArrayList<>();
+    private char labelChar = 'A';
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -23,6 +25,20 @@ public class CartesianCoordinatePanel extends JPanel {
 
     public void addPoint(int x, int y) {
         points.add(new Point(x, y));
+        pointLabels.add(String.valueOf(labelChar));
+        labelChar++;
+        repaint();
+    }
+
+    public void removePoint(int x, int y) {
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).x == x && points.get(i).y == y) {
+                points.remove(i);
+                pointLabels.remove(i);
+                labelChar--;
+                break;
+            }
+        }
         repaint();
     }
 
@@ -52,11 +68,15 @@ public class CartesianCoordinatePanel extends JPanel {
 
         drawGrid(g2d, width, height, centerX, centerY);
 
-        g2d.setColor(Color.CYAN);
-        for (Point p : points) {
+        for (int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
             int x = centerX + p.x * scale;
             int y = centerY - p.y * scale;
-            g2d.fillOval(x - 5, y - 5, 10, 10);
+
+            g2d.fillOval(x - 5, y - 5, 5, 5);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(pointLabels.get(i), x + 10, y - 5);
         }
     }
 
