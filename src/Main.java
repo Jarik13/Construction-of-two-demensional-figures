@@ -6,7 +6,14 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Parallelograms in Java!");
+        initializeUI(frame);
 
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
+
+    private static void initializeUI(JFrame frame) {
         CartesianCoordinatePanel mainPanel = new CartesianCoordinatePanel();
 
         JPanel inputPanel = new JPanel();
@@ -28,7 +35,7 @@ public class Main {
             try {
                 int x = Integer.parseInt(xField.getText());
                 int y = Integer.parseInt(yField.getText());
-                // Додаємо точку на панель
+                // mainPanel.addPoint(x, y);
                 xField.setText("");
                 yField.setText("");
             } catch (NumberFormatException ex) {
@@ -39,9 +46,5 @@ public class Main {
         frame.setLayout(new BorderLayout());
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.add(inputPanel, BorderLayout.NORTH);
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
     }
 }
