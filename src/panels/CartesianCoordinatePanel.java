@@ -42,6 +42,10 @@ public class CartesianCoordinatePanel extends JPanel {
         repaint();
     }
 
+    public List<Point> getPoints() {
+        return points;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
