@@ -34,7 +34,7 @@ public class Main {
         JLabel yLabel = new JLabel("Y:");
         JTextField yField = new JTextField(5);
         JButton addButton = new JButton("Add Point");
-        JButton removeButton = new JButton("Remove Point");
+        JButton clearButton = new JButton("Clear");
         JButton createParallelogramButton = new JButton("Create Parallelogram");
 
         inputPanel.add(xLabel);
@@ -42,7 +42,7 @@ public class Main {
         inputPanel.add(yLabel);
         inputPanel.add(yField);
         inputPanel.add(addButton);
-        inputPanel.add(removeButton);
+        inputPanel.add(clearButton);
         inputPanel.add(createParallelogramButton);
 
         addButton.addActionListener(e -> {
@@ -61,24 +61,9 @@ public class Main {
             }
         });
 
-        removeButton.addActionListener(e -> {
-            try {
-                int x = Integer.parseInt(xField.getText());
-                int y = Integer.parseInt(yField.getText());
-                mainPanel.removePoint(x, y);
-
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    if (tableModel.getValueAt(i, 1).equals(x) && tableModel.getValueAt(i, 2).equals(y)) {
-                        tableModel.removeRow(i);
-                        break;
-                    }
-                }
-
-                xField.setText("");
-                yField.setText("");
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
-            }
+        clearButton.addActionListener(e -> {
+           mainPanel.clearPanel();
+           tableModel.setRowCount(0);
         });
 
         createParallelogramButton.addActionListener(e -> {

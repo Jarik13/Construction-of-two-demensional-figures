@@ -48,9 +48,12 @@ public class CartesianCoordinatePanel extends JPanel {
         }
     }
 
-    public void removePoint(int x, int y) {
-        currentPoints.removeIf(p -> p.x == x && p.y == y);
-        parallelograms.forEach(list -> list.removeIf(p -> p.x == x && p.y == y));
+    public void clearPanel() {
+        currentPoints.clear();
+        parallelograms.clear();
+        pointLabels.clear();
+        parallelogramLabels.clear();
+        labelChar = 'A';
         repaint();
     }
 
