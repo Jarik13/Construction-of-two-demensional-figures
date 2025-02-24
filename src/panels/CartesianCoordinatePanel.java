@@ -87,6 +87,20 @@ public class CartesianCoordinatePanel extends JPanel {
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(labels.get(j), xPoints[j] + 10, yPoints[j] - 5);
             }
+
+            if (isInSecondQuadrant(parallelogram)) {
+                g2d.setColor(Color.RED);
+                g2d.drawLine(xPoints[0], yPoints[0], xPoints[2], yPoints[2]);
+                g2d.drawLine(xPoints[1], yPoints[1], xPoints[3], yPoints[3]);
+
+                g2d.setColor(Color.BLUE);
+                double distance = distanceFromPointToLine(parallelogram.get(0),
+                        parallelogram.get(1), parallelogram.get(3));
+                int heightX = xPoints[0];
+                int heightY = yPoints[0] + (int) distance * scale;
+
+                g2d.drawLine(xPoints[0], yPoints[0], heightX, heightY);
+            }
         }
     }
 
@@ -177,5 +191,21 @@ public class CartesianCoordinatePanel extends JPanel {
         int v4x = p1.x - p4.x, v4y = p1.y - p4.y;
 
         return (v1x * v3y - v1y * v3x == 0) && (v2x * v4y - v2y * v4x == 0);
+    }
+
+    private boolean isInSecondQuadrant(List<Point> parallelogram) {
+        for (Point point : parallelogram) {
+            if (!(point.x < 0 && point.y > 0)) {
+                return false;
+            }
+        }
+
+        return  true;
+    }
+
+    private double distanceFromPointToLine(Point p, Point lineStart, Point lineEnd) {
+        double numerator = Math.abs((lineEnd.y - lineStart.y) * p.x - (lineEnd.x - lineStart.x) * p.y + lineEnd.x * lineStart.y - lineEnd.y * lineStart.x);
+        double denominator = Math.sqrt(Math.pow(lineEnd.y - lineStart.y, 2) + Math.pow(lineEnd.x - lineStart.x, 2));
+        return numerator / denominator;
     }
 }
