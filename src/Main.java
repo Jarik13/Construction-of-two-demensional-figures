@@ -62,12 +62,12 @@ public class Main {
         });
 
         clearButton.addActionListener(e -> {
-           mainPanel.clearPanel();
-           tableModel.setRowCount(0);
+            mainPanel.clearPanel();
+            tableModel.setRowCount(0);
         });
 
         createParallelogramButton.addActionListener(e -> {
-            if (mainPanel.getCurrentPoints().size() >= 4) {
+            if (mainPanel.getCurrentPoints().size() == 4) {
                 mainPanel.addParallelogram();
             } else {
                 JOptionPane.showMessageDialog(frame, "Not enough points for the parallelogram (4 points)");

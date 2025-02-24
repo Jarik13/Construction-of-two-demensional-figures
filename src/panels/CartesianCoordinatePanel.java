@@ -39,14 +39,16 @@ public class CartesianCoordinatePanel extends JPanel {
     }
 
     public void addParallelogram() {
-        if (currentPoints.size() == 4) {
+        if (isParallelogram()) {
             parallelograms.add(new ArrayList<>(currentPoints));
             parallelogramLabels.add(new ArrayList<>(pointLabels));
-            currentPoints.clear();
-            pointLabels.clear();
-            labelChar = 'A';
-            repaint();
+        } else {
+            JOptionPane.showMessageDialog(this, "The points do not form a parallelogram.");
         }
+        currentPoints.clear();
+        pointLabels.clear();
+        labelChar = 'A';
+        repaint();
     }
 
     public void clearPanel() {
@@ -159,5 +161,21 @@ public class CartesianCoordinatePanel extends JPanel {
             g2d.drawLine(centerX - 5, y, centerX + 5, y);
             g2d.drawString(String.valueOf((centerY - y) / scale), centerX + 10, y + 5);
         }
+    }
+
+    private boolean isParallelogram() {
+        if (currentPoints.size() != 4) return false;
+
+        Point p1 = currentPoints.get(0);
+        Point p2 = currentPoints.get(1);
+        Point p3 = currentPoints.get(2);
+        Point p4 = currentPoints.get(3);
+
+        int v1x = p2.x - p1.x, v1y = p2.y - p1.y;
+        int v2x = p3.x - p2.x, v2y = p3.y - p2.y;
+        int v3x = p4.x - p3.x, v3y = p4.y - p3.y;
+        int v4x = p1.x - p4.x, v4y = p1.y - p4.y;
+
+        return (v1x * v3y - v1y * v3x == 0) && (v2x * v4y - v2y * v4x == 0);
     }
 }
