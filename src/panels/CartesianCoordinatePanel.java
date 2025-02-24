@@ -7,7 +7,8 @@ import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
-    private List<Point> points = new ArrayList<>();
+    private List<Point> currentPoints = new ArrayList<>();
+    private List<List<Point>> parallelograms = new ArrayList<>();
     private List<String> pointLabels = new ArrayList<>();
     private char labelChar = 'A';
 
@@ -23,27 +24,48 @@ public class CartesianCoordinatePanel extends JPanel {
         });
     }
 
+    public List<Point> getCurrentPoints() {
+        return currentPoints;
+    }
+
     public void addPoint(int x, int y) {
-        points.add(new Point(x, y));
+        currentPoints.add(new Point(x, y));
         pointLabels.add(String.valueOf(labelChar));
         labelChar++;
+
         repaint();
+    }
+
+    public void addParallelogram() {
+        if (currentPoints.size() == 4) {
+            parallelograms.add(new ArrayList<>(currentPoints));
+            currentPoints.clear();
+            pointLabels.clear();
+            labelChar = 'A';
+            repaint();
+        }
     }
 
     public void removePoint(int x, int y) {
-        for (int i = 0; i < points.size(); i++) {
-            if (points.get(i).x == x && points.get(i).y == y) {
-                points.remove(i);
-                pointLabels.remove(i);
-                labelChar--;
-                break;
-            }
-        }
+        currentPoints.removeIf(p -> p.x == x && p.y == y);
+        parallelograms.forEach(list -> list.removeIf(p -> p.x == x && p.y == y));
         repaint();
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public void drawParallelogram(Graphics2D g2d, int centerX, int centerY) {
+        g2d.setColor(Color.GREEN);
+        g2d.setStroke(new BasicStroke(2));
+        for (var parallelogram : parallelograms) {
+            int[] xPoints = new int[4];
+            int[] yPoints = new int[4];
+
+            for (int i = 0; i < xPoints.length; i++) {
+                xPoints[i] = centerX + parallelogram.get(i).x * scale;
+                yPoints[i] = centerY - parallelogram.get(i).y * scale;
+            }
+
+            g2d.drawPolygon(xPoints, yPoints, 4);
+        }
     }
 
     @Override
@@ -72,16 +94,18 @@ public class CartesianCoordinatePanel extends JPanel {
 
         drawGrid(g2d, width, height, centerX, centerY);
 
-        for (int i = 0; i < points.size(); i++) {
-            Point p = points.get(i);
+        for (int i = 0; i < currentPoints.size(); i++) {
+            Point p = currentPoints.get(i);
             int x = centerX + p.x * scale;
             int y = centerY - p.y * scale;
 
-            g2d.fillOval(x - 5, y - 5, 5, 5);
+            g2d.fillOval(x, y, 5, 5);
 
             g2d.setColor(Color.BLACK);
             g2d.drawString(pointLabels.get(i), x + 10, y - 5);
         }
+
+        drawParallelogram(g2d, centerX, centerY);
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {

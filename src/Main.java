@@ -3,7 +3,6 @@ import panels.CartesianCoordinatePanel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,7 +19,6 @@ public class Main {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
 
-        // Створення таблиці для відображення точок
         String[] columnNames = {"Point", "X", "Y"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         JTable pointTable = new JTable(tableModel);
@@ -28,7 +26,6 @@ public class Main {
 
         contentPanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        // Панель для введення координат точок
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -38,6 +35,7 @@ public class Main {
         JTextField yField = new JTextField(5);
         JButton addButton = new JButton("Add Point");
         JButton removeButton = new JButton("Remove Point");
+        JButton createParallelogramButton = new JButton("Create Parallelogram");
 
         inputPanel.add(xLabel);
         inputPanel.add(xField);
@@ -45,6 +43,7 @@ public class Main {
         inputPanel.add(yField);
         inputPanel.add(addButton);
         inputPanel.add(removeButton);
+        inputPanel.add(createParallelogramButton);
 
         addButton.addActionListener(e -> {
             try {
@@ -52,7 +51,7 @@ public class Main {
                 int y = Integer.parseInt(yField.getText());
                 mainPanel.addPoint(x, y);
 
-                String pointLabel = String.valueOf((char) ('A' + mainPanel.getPoints().size() - 1));
+                String pointLabel = String.valueOf((char) ('A' + mainPanel.getCurrentPoints().size() - 1));
                 tableModel.addRow(new Object[]{pointLabel, x, y});
 
                 xField.setText("");
@@ -79,6 +78,14 @@ public class Main {
                 yField.setText("");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
+            }
+        });
+
+        createParallelogramButton.addActionListener(e -> {
+            if (mainPanel.getCurrentPoints().size() >= 4) {
+                mainPanel.addParallelogram();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Not enough points for the parallelogram (4 points)");
             }
         });
 
