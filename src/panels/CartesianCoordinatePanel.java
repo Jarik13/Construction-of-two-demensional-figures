@@ -2,6 +2,7 @@ package panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +72,14 @@ public class CartesianCoordinatePanel extends JPanel {
                 yPoints[j] = centerY - parallelogram.get(j).y * scale;
             }
 
-            g2d.drawPolygon(xPoints, yPoints, 4);
+            Point2D start = new Point2D.Float(xPoints[0], yPoints[0]);
+            Point2D end = new Point2D.Float(xPoints[xPoints.length - 1], yPoints[yPoints.length - 1]);
+            Color color1 = Color.GREEN;
+            Color color2 = Color.YELLOW;
+            LinearGradientPaint gradient = new LinearGradientPaint(start, end, new float[]{0f, 1f}, new Color[]{color1, color2});
+
+            g2d.setPaint(gradient);
+            g2d.fillPolygon(xPoints, yPoints, 4);
 
             for (int j = 0; j < parallelogram.size(); j++) {
                 g2d.setColor(Color.BLACK);
