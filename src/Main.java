@@ -53,8 +53,12 @@ public class Main {
                 int y = Integer.parseInt(yField.getText());
                 mainPanel.addPoint(x, y);
 
-                String pointLabel = String.valueOf((char) ('A' + mainPanel.getCurrentPoints().size() - 1));
-                tableModel.addRow(new Object[]{pointLabel, x, y});
+                tableModel.setRowCount(0);
+                for (int i = 0; i < mainPanel.getCurrentPoints().size(); i++) {
+                    Point p = mainPanel.getCurrentPoints().get(i);
+                    String pointLabel = String.valueOf((char) ('A' + i));
+                    tableModel.addRow(new Object[]{pointLabel, p.x, p.y});
+                }
 
                 xField.setText("");
                 yField.setText("");

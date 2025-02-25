@@ -29,9 +29,14 @@ public class ParallelogramManager {
     }
 
     public void addPoint(int x, int y) {
-        currentPoints.add(new Point(x, y));
-        pointLabels.add(String.valueOf(labelChar));
-        labelChar++;
+        if (currentPoints.size() < 3) {
+            currentPoints.add(new Point(x, y));
+            pointLabels.add(String.valueOf(labelChar));
+            labelChar++;
+        }
+        if (currentPoints.size() == 3) {
+            addFourthPoint();
+        }
     }
 
     public void createParallelogram() {
@@ -52,6 +57,22 @@ public class ParallelogramManager {
         pointLabels.clear();
         parallelogramLabels.clear();
         labelChar = 'A';
+    }
+
+    private void addFourthPoint() {
+        if (currentPoints.size() == 3) {
+            Point p1 = currentPoints.get(0);
+            Point p2 = currentPoints.get(1);
+            Point p3 = currentPoints.get(2);
+
+            int x4 = p1.x + (p3.x - p2.x);
+            int y4 = p1.y + (p3.y - p2.y);
+            Point p4 = new Point(x4, y4);
+
+            currentPoints.add(p4);
+            pointLabels.add(String.valueOf(labelChar));
+            labelChar++;
+        }
     }
 
     private boolean isParallelogram() {
