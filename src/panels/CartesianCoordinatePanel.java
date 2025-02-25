@@ -5,7 +5,6 @@ import managers.ParallelogramManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
@@ -59,40 +58,36 @@ public class CartesianCoordinatePanel extends JPanel {
         for (int i = 0; i < manager.getParallelograms().size(); i++) {
             var parallelogram = manager.getParallelograms().get(i);
             var labels = manager.getParallelogramLabels().get(i);
-            int[] xPoints = new int[4];
-            int[] yPoints = new int[4];
+            List<Point> screenPoints = calculatePolygonPoints(parallelogram, centerX, centerY);
 
-            for (int j = 0; j < xPoints.length; j++) {
-                xPoints[j] = centerX + parallelogram.get(j).x * scale;
-                yPoints[j] = centerY - parallelogram.get(j).y * scale;
-            }
-
-            Point2D start = new Point2D.Float(xPoints[0], yPoints[0]);
-            Point2D end = new Point2D.Float(xPoints[xPoints.length - 1], yPoints[yPoints.length - 1]);
+            Point2D start = screenPoints.get(0);
+            Point2D end = screenPoints.get(3);
             Color color1 = Color.GREEN;
             Color color2 = Color.YELLOW;
             LinearGradientPaint gradient = new LinearGradientPaint(start, end, new float[]{0f, 1f}, new Color[]{color1, color2});
 
             g2d.setPaint(gradient);
-            g2d.fillPolygon(xPoints, yPoints, 4);
+            g2d.fillPolygon(
+                    screenPoints.stream().mapToInt(p -> p.x).toArray(),
+                    screenPoints.stream().mapToInt(p -> p.y).toArray(),
+                    4);
 
+            g2d.setColor(Color.BLACK);
             for (int j = 0; j < parallelogram.size(); j++) {
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(labels.get(j), xPoints[j] + 10, yPoints[j] - 5);
+                g2d.drawString(labels.get(j), screenPoints.get(j).x + 10, screenPoints.get(j).y - 5);
             }
 
             if (isInSecondQuadrant(parallelogram)) {
                 g2d.setColor(diagonalColor);
-                g2d.drawLine(xPoints[0], yPoints[0], xPoints[2], yPoints[2]);
-                g2d.drawLine(xPoints[1], yPoints[1], xPoints[3], yPoints[3]);
+                g2d.drawLine(screenPoints.get(0).x, screenPoints.get(0).y, screenPoints.get(2).x, screenPoints.get(2).y);
+                g2d.drawLine(screenPoints.get(1).x, screenPoints.get(1).y, screenPoints.get(3).x, screenPoints.get(3).y);
 
                 g2d.setColor(Color.BLUE);
-                double distance = distanceFromPointToLine(parallelogram.get(0),
-                        parallelogram.get(2), parallelogram.get(3));
-                int heightX = xPoints[0];
-                int heightY = yPoints[0] + (int) distance * scale;
+                int heightX = screenPoints.get(0).x;
+                int heightY = screenPoints.getFirst().y + (int) (distanceFromPointToLine(parallelogram.get(0),
+                        parallelogram.get(2), parallelogram.get(3)) * scale);
 
-                g2d.drawLine(xPoints[0], yPoints[0], heightX, heightY);
+                g2d.drawLine(screenPoints.getFirst().x, screenPoints.getFirst().y, heightX, heightY);
             }
         }
     }
@@ -116,7 +111,7 @@ public class CartesianCoordinatePanel extends JPanel {
         drawArrow(g2d, width, centerY, true);
         drawArrow(g2d, centerX, 0, false);
 
-        g2d.setFont(new Font("Arial", Font.PLAIN, 14));
+        g2d.setFont(new Font("Arial", Font.PLAIN, 12));
 
         g2d.drawString("X", width - 20, centerY - 5);
         g2d.drawString("Y", centerX + 5, 15);
@@ -184,5 +179,12 @@ public class CartesianCoordinatePanel extends JPanel {
         double numerator = Math.abs((lineEnd.y - lineStart.y) * p.x - (lineEnd.x - lineStart.x) * p.y + lineEnd.x * lineStart.y - lineEnd.y * lineStart.x);
         double denominator = Math.sqrt(Math.pow(lineEnd.y - lineStart.y, 2) + Math.pow(lineEnd.x - lineStart.x, 2));
         return numerator / denominator;
+    }
+
+    private List<Point> calculatePolygonPoints(List<Point> parallelogram, int centerX, int centerY) {
+        return parallelogram
+                .stream()
+                .map(p -> new Point(centerX + p.x * scale, centerY - p.y * scale))
+                .toList();
     }
 }
