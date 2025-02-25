@@ -53,11 +53,12 @@ public class Main {
                 int y = Integer.parseInt(yField.getText());
                 mainPanel.addPoint(x, y);
 
-                tableModel.setRowCount(0);
-                for (int i = 0; i < mainPanel.getCurrentPoints().size(); i++) {
-                    Point p = mainPanel.getCurrentPoints().get(i);
-                    String pointLabel = String.valueOf((char) ('A' + i));
-                    tableModel.addRow(new Object[]{pointLabel, p.x, p.y});
+                if (mainPanel.getCurrentPoints().size() == 4) {
+                    for (int i = 0; i < mainPanel.getCurrentPoints().size(); i++) {
+                        Point point = mainPanel.getCurrentPoints().get(i);
+                        String label = String.valueOf((char) ('A' + i));
+                        tableModel.addRow(new Object[]{label, point.x, point.y});
+                    }
                 }
 
                 xField.setText("");
