@@ -1,5 +1,7 @@
 package panels;
 
+import managers.ParallelogramManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -8,12 +10,8 @@ import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
-    private List<Point> currentPoints = new ArrayList<>();
-    private List<List<Point>> parallelograms = new ArrayList<>();
-    private List<String> pointLabels = new ArrayList<>();
-    private List<List<String>> parallelogramLabels = new ArrayList<>();
-    private char labelChar = 'A';
     private Color diagonalColor = Color.RED;
+    private final ParallelogramManager manager = new ParallelogramManager();
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -28,7 +26,7 @@ public class CartesianCoordinatePanel extends JPanel {
     }
 
     public List<Point> getCurrentPoints() {
-        return currentPoints;
+        return manager.getCurrentPoints();
     }
 
     public Color getDiagonalColor() {
@@ -41,41 +39,26 @@ public class CartesianCoordinatePanel extends JPanel {
     }
 
     public void addPoint(int x, int y) {
-        currentPoints.add(new Point(x, y));
-        pointLabels.add(String.valueOf(labelChar));
-        labelChar++;
-
+        manager.addPoint(x, y);
         repaint();
     }
 
     public void addParallelogram() {
-        if (isParallelogram()) {
-            parallelograms.add(new ArrayList<>(currentPoints));
-            parallelogramLabels.add(new ArrayList<>(pointLabels));
-        } else {
-            JOptionPane.showMessageDialog(this, "The points do not form a parallelogram.");
-        }
-        currentPoints.clear();
-        pointLabels.clear();
-        labelChar = 'A';
+        manager.createParallelogram();
         repaint();
     }
 
     public void clearPanel() {
-        currentPoints.clear();
-        parallelograms.clear();
-        pointLabels.clear();
-        parallelogramLabels.clear();
-        labelChar = 'A';
+        manager.clearPoints();
         repaint();
     }
 
     public void drawParallelogram(Graphics2D g2d, int centerX, int centerY) {
         g2d.setColor(Color.GREEN);
         g2d.setStroke(new BasicStroke(2));
-        for (int i = 0; i < parallelograms.size(); i++) {
-            var parallelogram = parallelograms.get(i);
-            var labels = parallelogramLabels.get(i);
+        for (int i = 0; i < manager.getParallelograms().size(); i++) {
+            var parallelogram = manager.getParallelograms().get(i);
+            var labels = manager.getParallelogramLabels().get(i);
             int[] xPoints = new int[4];
             int[] yPoints = new int[4];
 
@@ -109,9 +92,6 @@ public class CartesianCoordinatePanel extends JPanel {
                 int heightX = xPoints[0];
                 int heightY = yPoints[0] + (int) distance * scale;
 
-                System.out.println("Distance: " + distance);
-                System.out.println("heightX: " + heightX);
-                System.out.println("heightY: " + heightY);
                 g2d.drawLine(xPoints[0], yPoints[0], heightX, heightY);
             }
         }
@@ -143,15 +123,15 @@ public class CartesianCoordinatePanel extends JPanel {
 
         drawGrid(g2d, width, height, centerX, centerY);
 
-        for (int i = 0; i < currentPoints.size(); i++) {
-            Point p = currentPoints.get(i);
+        for (int i = 0; i < manager.getCurrentPoints().size(); i++) {
+            Point p = manager.getCurrentPoints().get(i);
             int x = centerX + p.x * scale;
             int y = centerY - p.y * scale;
 
             g2d.fillOval(x, y, 5, 5);
 
             g2d.setColor(Color.BLACK);
-            g2d.drawString(pointLabels.get(i), x + 10, y - 5);
+            g2d.drawString(manager.getPointLabels().get(i), x + 10, y - 5);
         }
 
         drawParallelogram(g2d, centerX, centerY);
@@ -188,22 +168,6 @@ public class CartesianCoordinatePanel extends JPanel {
             g2d.drawLine(centerX - 5, y, centerX + 5, y);
             g2d.drawString(String.valueOf((centerY - y) / scale), centerX + 10, y + 5);
         }
-    }
-
-    private boolean isParallelogram() {
-        if (currentPoints.size() != 4) return false;
-
-        Point p1 = currentPoints.get(0);
-        Point p2 = currentPoints.get(1);
-        Point p3 = currentPoints.get(2);
-        Point p4 = currentPoints.get(3);
-
-        int v1x = p2.x - p1.x, v1y = p2.y - p1.y;
-        int v2x = p3.x - p2.x, v2y = p3.y - p2.y;
-        int v3x = p4.x - p3.x, v3y = p4.y - p3.y;
-        int v4x = p1.x - p4.x, v4y = p1.y - p4.y;
-
-        return (v1x * v3y - v1y * v3x == 0) && (v2x * v4y - v2y * v4x == 0);
     }
 
     private boolean isInSecondQuadrant(List<Point> parallelogram) {
