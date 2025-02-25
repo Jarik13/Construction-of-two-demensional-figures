@@ -5,6 +5,7 @@ import managers.ParallelogramManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Comparator;
 import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
@@ -60,6 +61,34 @@ public class CartesianCoordinatePanel extends JPanel {
             var labels = manager.getParallelogramLabels().get(i);
             List<Point> screenPoints = calculatePolygonPoints(parallelogram, centerX, centerY);
 
+            Point topLeft = screenPoints.getFirst();
+            Point bottomLeft = null;
+            Point bottomRight = null;
+
+            List<Point> topPoints = screenPoints.stream()
+                    .filter(p -> p.y == screenPoints.stream().mapToDouble(Point::getY).min().orElse(Integer.MIN_VALUE))
+                    .toList();
+
+            List<Point> bottomPoints = screenPoints.stream()
+                    .filter(p -> p.y == screenPoints.stream().mapToDouble(Point::getY).max().orElse(Integer.MAX_VALUE))
+                    .toList();
+
+            if (!topPoints.isEmpty()) {
+                topLeft = topPoints.stream()
+                        .min(Comparator.comparingInt(p -> p.x))
+                        .orElse(null);
+            }
+
+            if (!bottomPoints.isEmpty()) {
+                bottomLeft = bottomPoints.stream()
+                        .min(Comparator.comparingInt(p -> p.x))
+                        .orElse(null);
+
+                bottomRight = bottomPoints.stream()
+                        .max(Comparator.comparingInt(p -> p.x))
+                        .orElse(null);
+            }
+
             Point2D start = screenPoints.get(0);
             Point2D end = screenPoints.get(3);
             Color color1 = Color.GREEN;
@@ -83,11 +112,11 @@ public class CartesianCoordinatePanel extends JPanel {
                 g2d.drawLine(screenPoints.get(1).x, screenPoints.get(1).y, screenPoints.get(3).x, screenPoints.get(3).y);
 
                 g2d.setColor(Color.BLUE);
-                int heightX = screenPoints.get(0).x;
-                int heightY = screenPoints.getFirst().y + (int) (distanceFromPointToLine(parallelogram.get(0),
-                        parallelogram.get(2), parallelogram.get(3)) * scale);
+                double height = distanceFromPointToLine(topLeft, bottomLeft, bottomRight);
+                int heightX = topLeft.x;
+                int heightY = topLeft.y + (int) height;
 
-                g2d.drawLine(screenPoints.getFirst().x, screenPoints.getFirst().y, heightX, heightY);
+                g2d.drawLine(topLeft.x, topLeft.y, heightX, heightY);
             }
         }
     }
