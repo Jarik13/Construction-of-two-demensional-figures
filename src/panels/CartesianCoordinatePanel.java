@@ -105,10 +105,13 @@ public class CartesianCoordinatePanel extends JPanel {
 
                 g2d.setColor(Color.BLUE);
                 double distance = distanceFromPointToLine(parallelogram.get(0),
-                        parallelogram.get(1), parallelogram.get(3));
+                        parallelogram.get(2), parallelogram.get(3));
                 int heightX = xPoints[0];
                 int heightY = yPoints[0] + (int) distance * scale;
 
+                System.out.println("Distance: " + distance);
+                System.out.println("heightX: " + heightX);
+                System.out.println("heightY: " + heightY);
                 g2d.drawLine(xPoints[0], yPoints[0], heightX, heightY);
             }
         }
