@@ -36,6 +36,7 @@ public class Main {
         JButton addButton = new JButton("Add Point");
         JButton clearButton = new JButton("Clear");
         JButton createParallelogramButton = new JButton("Create Parallelogram");
+        JButton chooseDiagonalColor = new JButton("Choose color");
 
         inputPanel.add(xLabel);
         inputPanel.add(xField);
@@ -44,6 +45,7 @@ public class Main {
         inputPanel.add(addButton);
         inputPanel.add(clearButton);
         inputPanel.add(createParallelogramButton);
+        inputPanel.add(chooseDiagonalColor);
 
         addButton.addActionListener(e -> {
             try {
@@ -71,6 +73,13 @@ public class Main {
                 mainPanel.addParallelogram();
             } else {
                 JOptionPane.showMessageDialog(frame, "Not enough points for the parallelogram (4 points)");
+            }
+        });
+
+        chooseDiagonalColor.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(frame, "Choose diagonal color", mainPanel.getDiagonalColor());
+            if (newColor != null) {
+                mainPanel.setDiagonalColor(newColor);
             }
         });
 

@@ -13,6 +13,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private List<String> pointLabels = new ArrayList<>();
     private List<List<String>> parallelogramLabels = new ArrayList<>();
     private char labelChar = 'A';
+    private Color diagonalColor = Color.RED;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -28,6 +29,15 @@ public class CartesianCoordinatePanel extends JPanel {
 
     public List<Point> getCurrentPoints() {
         return currentPoints;
+    }
+
+    public Color getDiagonalColor() {
+        return diagonalColor;
+    }
+
+    public void setDiagonalColor(Color diagonalColor) {
+        this.diagonalColor = diagonalColor;
+        repaint();
     }
 
     public void addPoint(int x, int y) {
@@ -89,7 +99,7 @@ public class CartesianCoordinatePanel extends JPanel {
             }
 
             if (isInSecondQuadrant(parallelogram)) {
-                g2d.setColor(Color.RED);
+                g2d.setColor(diagonalColor);
                 g2d.drawLine(xPoints[0], yPoints[0], xPoints[2], yPoints[2]);
                 g2d.drawLine(xPoints[1], yPoints[1], xPoints[3], yPoints[3]);
 
