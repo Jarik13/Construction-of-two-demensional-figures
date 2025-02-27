@@ -3,6 +3,7 @@ package managers;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ParallelogramManager {
@@ -35,6 +36,7 @@ public class ParallelogramManager {
             labelChar++;
         }
         if (currentPoints.size() == 3) {
+            reorderPoints();
             addFourthPoint();
         }
     }
@@ -57,6 +59,16 @@ public class ParallelogramManager {
         pointLabels.clear();
         parallelogramLabels.clear();
         labelChar = 'A';
+    }
+
+    private void reorderPoints() {
+        if (currentPoints.size() < 3) return;
+
+        Point base = currentPoints.stream()
+                .min(Comparator.comparingInt((Point p) -> p.x).thenComparingInt(p -> p.y))
+                .orElseThrow();
+
+        currentPoints.sort(Comparator.comparingDouble(p -> Math.atan2(p.y - base.y, p.x - base.x)));
     }
 
     private void addFourthPoint() {
