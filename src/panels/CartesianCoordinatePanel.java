@@ -44,8 +44,18 @@ public class CartesianCoordinatePanel extends JPanel {
     }
 
     public void addParallelogram() {
-        manager.createParallelogram();
-        repaint();
+        List<Point> newParallelogram = manager.getCurrentPoints();
+        if (newParallelogram.size() == 4) {
+            if (checkOverlap(newParallelogram)) {
+                newParallelogram.clear();
+                JOptionPane.showMessageDialog(this, "This area is already occupied by another parallelogram.");
+            } else {
+                manager.createParallelogram();
+            }
+            repaint();
+        } else {
+            JOptionPane.showMessageDialog(this, "Not enough points for the parallelogram (4 points)");
+        }
     }
 
     public void clearPanel() {
@@ -215,5 +225,26 @@ public class CartesianCoordinatePanel extends JPanel {
                 .stream()
                 .map(p -> new Point(centerX + p.x * scale, centerY - p.y * scale))
                 .toList();
+    }
+
+    private boolean checkOverlap(List<Point> newParallelogram) {
+        for (List<Point> existingParallelogram : manager.getParallelograms()) {
+            Polygon newPoly = new Polygon(
+                    newParallelogram.stream().mapToInt(p -> p.x).toArray(),
+                    newParallelogram.stream().mapToInt(p -> p.y).toArray(),
+                    newParallelogram.size()
+            );
+
+            Polygon existingPoly = new Polygon(
+                    existingParallelogram.stream().mapToInt(p -> p.x).toArray(),
+                    existingParallelogram.stream().mapToInt(p -> p.y).toArray(),
+                    existingParallelogram.size()
+            );
+
+            if (newPoly.intersects(existingPoly.getBounds2D())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
